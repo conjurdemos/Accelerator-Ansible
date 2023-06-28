@@ -4,7 +4,8 @@
 - Demonstrate best-practices for Ansible w/ CyberArk Secrets Management
 
 ### Proposed workflow:
-![PAS Automation MVPv1](https://github.com/conjurdemos/Accelerator-Ansible/blob/main/Ansible-MVPv1.png?raw=true)
+![Ansible MVPv1](https://github.com/conjurdemos/Accelerator-Ansible/blob/main/Ansible-MVPv1.png?raw=true)
+<Edited w/ sequencediagram.org>
 
 ## General steps:
 1. provision a database with access creds
