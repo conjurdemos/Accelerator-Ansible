@@ -1,0 +1,9 @@
+---
+- !host
+  id: ansible-aclr8r
+  annotations:
+    authn/api-key: true
+
+- !grant
+  role: !group vault/End2EndFlowsTest/delegation/consumers
+  member: !host ansible-aclr8r

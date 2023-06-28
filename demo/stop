@@ -1,0 +1,6 @@
+#!/bin/bash
+source ./ccloud-vars.sh
+source ./demo-vars.sh
+echo "Stopping and removing demo container..."
+set -x
+$DOCKER stop $DEMO_CONTAINER && $DOCKER rm $DEMO_CONTAINER

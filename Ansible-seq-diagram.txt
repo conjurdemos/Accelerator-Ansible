@@ -4,19 +4,17 @@ participant Admin
 participant Summon
 participant Ansible
 participant Database
-participant CCP
-participant Vault
+participant PVWA
 participant Conjur
 
 Admin->Database:Provision DB w/ \nusername/password
-Admin->Vault:Create DB account in Safe \nsynced to Conjur
-Admin->Vault:Create AppId for Ansible, \nadd as member of Safe
+Admin->PVWA:Create DB account in Safe \nsynced to Conjur
 Admin->Conjur:Create workload, grant \nSafe consumers role
 Admin->Summon:Run Summon \nw/ Conjur workload
 Summon->Conjur:Pull DB creds
 Summon->Ansible:Run playbook that uses \nDB creds in env vars\nto access DB
 Ansible->Database:Access DB
-Admin->Ansible:Run playbook that uses\nplugin for CCP
-Ansible->CCP:Pull DB creds
+Admin->Ansible:Run playbook that uses\nplugin for Conjur
+Ansible->Conjur:Pull DB creds
 Ansible->Database:Access DB
 

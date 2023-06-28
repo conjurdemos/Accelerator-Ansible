@@ -1,0 +1,67 @@
+#!/bin/bash
+source ./ccloud-vars.sh
+source ./demo-vars.sh
+
+main() {
+  ./stop
+  load_policy
+  generate_identity_files
+  build_image
+  start_container
+  initialize_demo
+  $DOCKER exec -it $DEMO_CONTAINER bash
+}
+
+load_policy() {
+set -x
+  ./ccloud-cli.sh append data ./policy/ansible-policy.yml
+}
+
+generate_identity_files() {
+  CONJUR_AUTHN_API_KEY=$(./ccloud-cli.sh rotate $CONJUR_AUTHN_LOGIN)
+
+  # create configuration and identity files (AKA conjurize the host)
+  echo "Generating identity file..."
+  cat <<IDENTITY_EOF | tee conjur.identity
+machine $CONJUR_CLOUD_URL/authn
+  login host/$CONJUR_AUTHN_LOGIN
+  password $CONJUR_AUTHN_API_KEY
+IDENTITY_EOF
+
+  echo
+  echo "Generating host configuration file..."
+  cat <<CONF_EOF | tee conjur.conf
+---
+appliance_url: $CONJUR_CLOUD_URL
+account: conjur
+netrc_path: "/etc/conjur.identity"
+cert_file: ""
+CONF_EOF
+}
+
+build_image() {
+  cd build
+    ./build.sh
+  cd .. 
+}
+
+start_container() {
+    $DOCKER run -d \
+    --name $DEMO_CONTAINER \
+    -e "CONJUR_LEADER_HOSTNAME=$CONJUR_CLOUD_URL" \
+    -e "TERM=xterm" \
+    --restart always \
+    --entrypoint "sh" \
+    $DEMO_IMAGE \
+    -c "sleep infinity"
+}
+
+initialize_demo() {
+  $DOCKER cp ./conjur.conf $DEMO_CONTAINER:/etc
+  $DOCKER cp ./conjur.identity $DEMO_CONTAINER:/etc
+  $DOCKER exec $DEMO_CONTAINER chmod 400 /etc/conjur.identity
+  rm ./conjur*
+  $DOCKER cp ./demo/. $DEMO_CONTAINER:/demo/
+}
+
+main $@
