@@ -1,8 +1,2 @@
-[dev]
+[demoMachines]
 localhost ansible_connection=local
-
-[test]
-conjur-master
-
-[prod]
-conjur-master
