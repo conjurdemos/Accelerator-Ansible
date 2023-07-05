@@ -11,7 +11,7 @@ util_defaults="set -u"
 
 showUsage() {
   echo "Usage:"
-  echo "      $0 [ whoami | resources | list | info | health | audit ]"
+  echo "      $0 [ whoami | resources | list ]"
   echo "      $0 [ get <var-name> ]"
   echo "      $0 [ set <var-name> <var-value> ]"
   echo "      $0 [ append <policy-branch> <policy-file-name> ]"
@@ -23,10 +23,10 @@ showUsage() {
 }
 
 main() {
-  checkEnvVars
+  checkDependencies
 
   case $1 in
-    whoami | resources | list | info | health | audit)
+    whoami | resources | list)
 	command=$1
 	;;
     get)
@@ -170,7 +170,7 @@ function conjur_resources {
   $CURL 						\
 	-X GET						\
 	-H "$authHeader" 				\
-	"$CONJUR_CLOUD_URL/resources/conjur" | jq
+	"$CONJUR_CLOUD_URL/resources/conjur" | jq .
 }
 
 #####################################
@@ -302,12 +302,16 @@ function urlify() {
 }
 
 #####################################
-# verifies required environment variables are set
-function checkEnvVars() {
+# verifies jq installed & required environment variables are set
+function checkDependencies() {
   all_env_set=true
+  if [[ "$(which jq)" == "" ]]; then
+    echo
+    echo "The JSON query utility jq is required. Please install jq."
+    all_env_set=false
+  fi
   if [[ "$IDENTITY_TENANT_ID" == "" ]]; then
     echo
-
     echo "  IDENTITY_TENANT_ID must be set - e.g. 'xyz1234'"
     all_env_set=false
   fi
@@ -336,34 +340,3 @@ function checkEnvVars() {
 }
 
 main "$@"
-
-#####################################
-# not implented in Conjur Cloud?
-function conjur_info {
-  $util_defaults
-  $CURL 				\
-	-X GET				\
-	-H "$authHeader"		\
-	"${CONJUR_CLOUD_URL}/info"
-}
-
-#####################################
-# not implented in Conjur Cloud?
-function conjur_health {
-  $util_defaults
-  $CURL 				\
-	-X GET				\
-	-H "$authHeader"		\
-	"${CONJUR_CLOUD_URL}/health"
-}
-
-#####################################
-# not implented in Conjur Cloud?
-function conjur_audit {
-  $util_defaults
-  response=$($CURL			\
-	  -H "$authHeader"		\
-	"${CONJUR_CLOUD_URL}/audit")
-  echo "$response"
-}
-

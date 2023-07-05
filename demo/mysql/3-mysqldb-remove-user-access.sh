@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../../config/conjur.config
+source ../demo-vars.sh
 
 if [[ $# != 2 ]]; then
   echo "Usage: $0 <db-name> <username>"

@@ -1,19 +1,26 @@
 #!/bin/bash
-source ./ccloud-vars.sh
 source ./demo-vars.sh
 
 main() {
-  ./stop
+  if [[ "$($DOCKER ps | grep $DEMO_CONTAINER)" != "" ]]; then
+    echo "Stopping and removing demo container..."
+    $DOCKER stop $DEMO_CONTAINER && $DOCKER rm $DEMO_CONTAINER
+    $DOCKER stop $MYSQL_SERVER && $DOCKER rm $MYSQL_SERVER
+  fi
   load_policy
   generate_identity_files
   build_image
   start_container
   initialize_demo
+  # Intialize DB
+  pushd mysql
+    ./1-mysql-server-start.sh
+    ./2-mysqldb-provision-user-access.sh $MYSQL_DBNAME $MYSQL_USERNAME $MYSQL_USER_PWD
+  popd
   $DOCKER exec -it $DEMO_CONTAINER bash
 }
 
 load_policy() {
-set -x
   ./ccloud-cli.sh append data ./policy/ansible-policy.yml
 }
 
