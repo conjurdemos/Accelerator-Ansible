@@ -15,7 +15,6 @@ main() {
   # Intialize DB
   pushd mysql
     ./1-mysql-server-start.sh
-    ./2-mysqldb-provision-user-access.sh $MYSQL_DBNAME $MYSQL_USERNAME $MYSQL_USER_PWD
   popd
   $DOCKER exec -it $DEMO_CONTAINER bash
 }
@@ -29,15 +28,14 @@ generate_identity_files() {
 
   # create configuration and identity files (AKA conjurize the host)
   echo "Generating identity file..."
-  cat <<IDENTITY_EOF | tee conjur.identity
+  cat <<IDENTITY_EOF > conjur.identity
 machine $CONJUR_CLOUD_URL/authn
   login host/$CONJUR_AUTHN_LOGIN
   password $CONJUR_AUTHN_API_KEY
 IDENTITY_EOF
 
-  echo
   echo "Generating host configuration file..."
-  cat <<CONF_EOF | tee conjur.conf
+  cat <<CONF_EOF > conjur.conf
 ---
 appliance_url: $CONJUR_CLOUD_URL
 account: conjur
@@ -47,20 +45,28 @@ CONF_EOF
 }
 
 build_image() {
-  cd build
-    ./build.sh
-  cd .. 
+  if [[ "$($DOCKER images -q $DEMO_IMAGE)" == "" ]]; then
+    cd build
+      ./build.sh
+    cd .. 
+  fi
 }
 
 start_container() {
     $DOCKER run -d \
     --name $DEMO_CONTAINER \
-    -e "CONJUR_LEADER_HOSTNAME=$CONJUR_CLOUD_URL" \
+    -e "MYSQL_LOGIN_HOST=$MYSQL_LOGIN_HOST" \
+    -e "MYSQL_LOGIN_PORT=$MYSQL_LOGIN_PORT" \
+    -e "MYSQL_DB_NAME=$MYSQL_DB_NAME" \
+    -e "MYSQL_LOGIN_USER=$MYSQL_LOGIN_USER" \
+    -e "MYSQL_ROOT_PASSWORD_ID=$MYSQL_ROOT_PASSWORD_ID" \
     -e "TERM=xterm" \
     --restart always \
     --entrypoint "sh" \
     $DEMO_IMAGE \
     -c "sleep infinity"
+
+#    -e "CONJUR_LEADER_HOSTNAME=$CONJUR_CLOUD_URL" \
 }
 
 initialize_demo() {

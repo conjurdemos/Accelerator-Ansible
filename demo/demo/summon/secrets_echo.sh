@@ -1,2 +1,2 @@
 #!/bin/bash 
-echo "SSH_KEY is $SSH_KEY"
+echo "MYSQL_ROOT_PASSWORD is $MYSQL_ROOT_PASSWORD"

@@ -1,3 +1,3 @@
-#!/bin/bash -e
-source ../../../config/conjur.config
-docker build -t $MYSQL_CLIENT_IMAGE .
+#!/bin/bash -x
+source ../../demo-vars.sh
+$DOCKER build -t $MYSQL_IMAGE .

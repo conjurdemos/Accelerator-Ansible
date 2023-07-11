@@ -7,20 +7,24 @@ RUN apt-get update -y \
     ssh \
     curl \
     wget \
-    unzip
+    unzip \
+    mysql-client
 
 ENV PYTHONUNBUFFERED=1
 RUN apt-get update -y             \
     && apt-get install -y python3 python3-pip ansible \
     && ln -sf python3 /usr/bin/python
-RUN pip3 install --no-cache --upgrade pip setuptools requests
+RUN pip3 install --no-cache --upgrade pip setuptools requests pymysql
 
 RUN curl -LO https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 \
   && chmod a+x jq-linux64 \
   && mv jq-linux64 /usr/local/bin/jq
 
-# install Ansible lookup plugin from local tarfile
+# install Ansible lookup plugin from galaxy
 RUN ansible-galaxy collection install cyberark.conjur
+
+# copy config that suppresses deprecation warnings
+COPY ansible.cfg /etc/ansible
 
 # install Summon and the Summon-conjur provider
 RUN cd /tmp \
