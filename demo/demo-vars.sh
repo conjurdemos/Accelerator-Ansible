@@ -1,3 +1,5 @@
+# Edit this file substituting correct values for <<YOUR_VALUE_HERE>>
+
 ##################################################
 # Local Docker values
 
@@ -8,16 +10,16 @@ export DOCKER="docker"
 # hostname running this demo
 # - can be an FQDN or entry in local /etc/hosts
 # - cannot be 'localhost' or IP address
-export DOCKER_HOSTNAME=conjur-master-mac
+export DOCKER_HOSTNAME=<<YOUR_VALUE_HERE>>
 
 ##################################################
 # CyberArk tenant values
 
 # ID of your CyberArk Identity tenant, e.g. xyz1234
-export IDENTITY_TENANT_ID=aao4987
+export IDENTITY_TENANT_ID=<<YOUR_VALUE_HERE>>
 
 # Subdomain name for CyberArk tenant
-export CYBERARK_SUBDOMAIN_NAME=cybr-secrets
+export CYBERARK_SUBDOMAIN_NAME=<<YOUR_VALUE_HERE>>
 
 ##################################################
 # Demo parameters
@@ -25,9 +27,17 @@ export CYBERARK_SUBDOMAIN_NAME=cybr-secrets
 # Name of Conjur workload identity to be created.
 # Ansible will use it to retrieve secrets managed in
 # the specified Safe and Account.
-export WORKLOAD_ID=ansible-aclr8r
-export SAFE_NAME=JodyDemo
-export ACCOUNT_NAME=MySQL-DB
+export WORKLOAD_ID=<<YOUR_VALUE_HERE>>
+export SAFE_NAME=<<YOUR_VALUE_HERE>>
+export ACCOUNT_NAME=<<YOUR_VALUE_HERE>>
+
+# name of test database for Ansible to create in MySQL server
+export MYSQL_DB_NAME=testdb
+
+###########################################################
+# NO NEED TO CHANGE ANYTHING BELOW THIS LINE
+# ALL VALUES BELOW ARE PRESET OR DERIVED FROM ABOVE.
+###########################################################
 
 ###########################################################
 # Ansible container
@@ -38,16 +48,10 @@ export DEMO_CONTAINER=ansible-xlr8r
 # Database container
 export MYSQL_IMAGE=mysql-5.7.32:ansible
 export MYSQL_SERVER=mysql-xlr8r
-export MYSQL_DB_NAME=testdb
 export MYSQL_LOGIN_HOST_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/address
 export MYSQL_LOGIN_PORT_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/Port
 export MYSQL_LOGIN_USER_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/username
 export MYSQL_PASSWORD_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/password
-
-###########################################################
-# NO NEED TO CHANGE ANYTHING BELOW THIS LINE
-# ALL VALUES BELOW ARE DERIVED FROM ABOVE.
-###########################################################
 
 # Prompt for admin user name if not already set
 if [[ "$CYBERARK_ADMIN_USER" == "" ]]; then
