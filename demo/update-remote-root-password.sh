@@ -16,7 +16,7 @@ echo "for remote root access."
 echo
 
 LOCALHOST_ROOT_PASSWORD="$($DOCKER exec $MYSQL_SERVER env | grep MYSQL_ROOT_PASSWORD | cut -d= -f2)"
-NEW_REMOTE_ROOT_PASSWORD=\'$(./ccloud-cli.sh get $MYSQL_ROOT_PASSWORD_ID)\'
+NEW_REMOTE_ROOT_PASSWORD=\'$(./ccloud-cli.sh get $MYSQL_PASSWORD_ID)\'
 echo "ALTER USER 'root'@'%' IDENTIFIED BY $NEW_REMOTE_ROOT_PASSWORD; flush privileges"	\
   | $DOCKER exec -i $MYSQL_SERVER							\
 	mysql -u root --password=$LOCALHOST_ROOT_PASSWORD
