@@ -1,40 +1,70 @@
-#------------------------------------------------
-# add 'sudo' as needed
+##################################################
+# Local Docker values
+
+# Docker command
 export DOCKER="docker"
-#------------------------------------------------
-# FQDN of host running demo
+#export DOCKER="sudo docker"
+
+# hostname running this demo
+# - can be an FQDN or entry in local /etc/hosts
+# - cannot be 'localhost' or IP address
 export DOCKER_HOSTNAME=conjur-master-mac
-#------------------------------------------------
-# ID of your CyberArk ISPSS tenant, e.g. xyz1234
+
+##################################################
+# CyberArk tenant values
+
+# ID of your CyberArk Identity tenant, e.g. xyz1234
 export IDENTITY_TENANT_ID=aao4987
-#------------------------------------------------
+
 # Subdomain name for CyberArk tenant
 export CYBERARK_SUBDOMAIN_NAME=cybr-secrets
-#------------------------------------------------
-# Conjur host identity name to be created.
-# Ansible will use it to retrieve secrets.
-export CONJUR_AUTHN_LOGIN=data/e2etest
+
+##################################################
+# Demo parameters
+
+# Name of Conjur workload identity to be created.
+# Ansible will use it to retrieve secrets managed in
+# the specified Safe and Account.
+export WORKLOAD_ID=ansible-aclr8r
+export SAFE_NAME=JodyDemo
+export ACCOUNT_NAME=MySQL-DB
+
+###########################################################
+# Ansible container
+export DEMO_IMAGE=ansible-xlr8r
+export DEMO_CONTAINER=ansible-xlr8r
+
+###########################################################
+# Database container
+export MYSQL_IMAGE=mysql-5.7.32:ansible
+export MYSQL_SERVER=mysql-xlr8r
+export MYSQL_DB_NAME=testdb
+export MYSQL_LOGIN_HOST_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/address
+export MYSQL_LOGIN_PORT_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/Port
+export MYSQL_LOGIN_USER_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/username
+export MYSQL_PASSWORD_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/password
 
 ###########################################################
 # NO NEED TO CHANGE ANYTHING BELOW THIS LINE
+# ALL VALUES BELOW ARE DERIVED FROM ABOVE.
 ###########################################################
-export CONJUR_CLOUD_URL=https://$CYBERARK_SUBDOMAIN_NAME.secretsmgr.cyberark.cloud/api
 
 # Prompt for admin user name if not already set
-if [[ "$CONJUR_ADMIN_USER" == "" ]]; then
+if [[ "$CYBERARK_ADMIN_USER" == "" ]]; then
   clear
-  echo "A Conjur admin user is needed for demo setup & initialization."
+  echo "A CyberArk admin user is needed for demo setup & initialization."
   echo "The admin user must be a Service user & Oauth2 confidential client" 
-  echo "in CyberArk Identity and must be granted the Conjur Admin role."
+  echo "in CyberArk Identity and must be granted the Conjur Admin role"
+  echo "and minimally the Privilege Cloud Safe Managers Basic role."
   echo
-  echo -n "Please enter the name of the Conjur admin user: "
+  echo -n "Please enter the name of the service user: "
   read admin_user
-  export CONJUR_ADMIN_USER=$admin_user
+  export CYBERARK_ADMIN_USER=$admin_user
 fi
 
 # Prompt for admin password if not already set
-if [[ "$CONJUR_ADMIN_PWD" == "" ]]; then
-  echo -n "Please enter password for $CONJUR_ADMIN_USER: "
+if [[ "$CYBERARK_ADMIN_PWD" == "" ]]; then
+  echo -n "Please enter password for $CYBERARK_ADMIN_USER: "
   unset password
   while IFS= read -r -s -n1 pass; do
     if [[ -z $pass ]]; then
@@ -45,25 +75,17 @@ if [[ "$CONJUR_ADMIN_PWD" == "" ]]; then
        password+=$pass
     fi
   done
-  export CONJUR_ADMIN_PWD=$password
+  export CYBERARK_ADMIN_PWD=$password
 fi
 
-###########################################################
-# Ansible container
-###########################################################
-export DEMO_IMAGE=ansible-xlr8r
-export DEMO_CONTAINER=ansible-xlr8r
+export CONJUR_CLOUD_URL=https://$CYBERARK_SUBDOMAIN_NAME.secretsmgr.cyberark.cloud/api
+export CONJUR_AUTHN_LOGIN=data/$WORKLOAD_ID
+export CONJUR_ADMIN_USER=$CYBERARK_ADMIN_USER
+export CONJUR_ADMIN_PWD=$CYBERARK_ADMIN_PWD
 
-###########################################################
-# Database container
-###########################################################
-export MYSQL_IMAGE=mysql-5.7.32:ansible
-export MYSQL_SERVER=mysql-xlr8r
-export MYSQL_ROOT_PASSWORD=Cyberark1
-export MYSQL_LOGIN_HOST=$DOCKER_HOSTNAME
-export MYSQL_LOGIN_PORT=3307
-export MYSQL_DB_NAME=testdb
-export MYSQL_LOGIN_USER=root
-export MYSQL_ROOT_PASSWORD_ID=data/vault/End2EndFlowsTest/E2E-SSH/password
+export PCLOUD_URL=https://$CYBERARK_SUBDOMAIN_NAME.privilegecloud.cyberark.cloud/PasswordVault/api
+export PCLOUD_ADMIN_USER=$CYBERARK_ADMIN_USER
+export PCLOUD_ADMIN_PWD=$CYBERARK_ADMIN_PWD
+
 ###########################################################
 # END

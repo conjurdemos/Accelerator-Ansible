@@ -209,12 +209,14 @@ function conjur_append_policy {
   $util_defaults
   policy_branch=$1
   policy_name=$2
-  response=$($CURL			\
+#  response=$(
+$CURL			\
 	-X POST				\
   	-H "$authHeader"		\
 	-d "$(< $policy_name)"		\
-	$CONJUR_CLOUD_URL/policies/conjur/policy/$policy_branch)
-  echo "$response"
+	$CONJUR_CLOUD_URL/policies/conjur/policy/$policy_branch
+#)
+#  echo "$response"
 }
 
 #####################################

@@ -1,0 +1,9 @@
+---
+- !host
+  id: {{ WORKLOAD_ID }}
+  annotations:
+    authn/api-key: true
+
+- !grant
+  role: !group vault/{{ SAFE_NAME }}/delegation/consumers
+  member: !host {{ WORKLOAD_ID }}

@@ -1,15 +1,20 @@
 ---
 - hosts: demoMachines
   gather_facts: False
+
   vars:
-    mysql_db_name: "{{ lookup('env', 'MYSQL_DB_NAME') }}"
     mysql_login_host: "{{ lookup('env', 'MYSQL_LOGIN_HOST') }}"
     mysql_login_port: "{{ lookup('env', 'MYSQL_LOGIN_PORT') }}"
     mysql_login_user: "{{ lookup('env', 'MYSQL_LOGIN_USER') }}"
     mysql_root_password: "{{ lookup('env', 'MYSQL_ROOT_PASSWORD') }}"
+    mysql_db_name: "{{ lookup('env', 'MYSQL_DB_NAME') }}"
 
   tasks:
-    - debug: msg="MySQL password is {{mysql_root_password}}"
+    - debug: msg="MySQL login host - {{mysql_login_host}}"
+    - debug: msg="MySQL login port - {{mysql_login_port}}"
+    - debug: msg="MySQL login user - {{mysql_login_user}}"
+    - debug: msg="MySQL root password - {{mysql_root_password}}"
+    - debug: msg="MySQL DB to be created is {{mysql_db_name}}"
 
     - name: create a new database
       mysql_db: >
@@ -25,4 +30,3 @@
         name="{{ mysql_db_name }}" state=import target=/tmp/dump.sql
         login_host="{{mysql_login_host}}" login_port="{{mysql_login_port}}"
         login_user="{{mysql_login_user}}" login_password="{{mysql_root_password}}"
-

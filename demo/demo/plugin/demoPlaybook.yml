@@ -3,17 +3,27 @@
   gather_facts: False
 
   vars:
+    # Get Conjur variable IDs from env vars
     mysql_db_name: "{{ lookup('env', 'MYSQL_DB_NAME') }}"
-    mysql_login_host: "{{ lookup('env', 'MYSQL_LOGIN_HOST') }}"
-    mysql_login_port: "{{ lookup('env', 'MYSQL_LOGIN_PORT') }}"
-    mysql_login_user: "{{ lookup('env', 'MYSQL_LOGIN_USER') }}"
-    mysql_root_password_id: "{{ lookup('env', 'MYSQL_ROOT_PASSWORD_ID') }}"
+    mysql_login_host_id: "{{ lookup('env', 'MYSQL_LOGIN_HOST_ID') }}"
+    mysql_login_port_id: "{{ lookup('env', 'MYSQL_LOGIN_PORT_ID') }}"
+    mysql_login_user_id: "{{ lookup('env', 'MYSQL_LOGIN_USER_ID') }}"
+    mysql_password_id: "{{ lookup('env', 'MYSQL_PASSWORD_ID') }}"
 
   tasks:
-    - name: Retrieve DB root password with host identity
+
+    - name: Retrieve DB server access parameters from Conjur
       set_fact:
-        mysql_root_password: "{{ lookup('cyberark.conjur.conjur_variable', '{{mysql_root_password_id}}') }}"
-    - debug: msg="MySQL password is {{mysql_root_password}}"
+        mysql_login_host: "{{ lookup('cyberark.conjur.conjur_variable', '{{mysql_login_host_id}}') }}"
+        mysql_login_port: "{{ lookup('cyberark.conjur.conjur_variable', '{{mysql_login_port_id}}') }}"
+        mysql_login_user: "{{ lookup('cyberark.conjur.conjur_variable', '{{mysql_login_user_id}}') }}"
+        mysql_root_password: "{{ lookup('cyberark.conjur.conjur_variable', '{{mysql_password_id}}') }}"
+
+    - debug: msg="MySQL login host - {{mysql_login_host}}"
+    - debug: msg="MySQL login port - {{mysql_login_port}}"
+    - debug: msg="MySQL login user - {{mysql_login_user}}"
+    - debug: msg="MySQL root password - {{mysql_root_password}}"
+    - debug: msg="MySQL DB to be created is {{mysql_db_name}}"
 
     - name: create a new database
       mysql_db: >

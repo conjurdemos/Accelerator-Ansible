@@ -7,22 +7,55 @@ main() {
     $DOCKER stop $DEMO_CONTAINER && $DOCKER rm $DEMO_CONTAINER
     $DOCKER stop $MYSQL_SERVER && $DOCKER rm $MYSQL_SERVER
   fi
+  check_dependencies
   load_policy
   generate_identity_files
   build_image
   start_container
   initialize_demo
   # Intialize DB
-  pushd mysql
+  export MYSQL_ROOT_PASSWORD=$(./ccloud-cli.sh get $MYSQL_PASSWORD_ID)
+  export MYSQL_LOGIN_PORT=$(./ccloud-cli.sh get $MYSQL_LOGIN_PORT_ID)
+  cd mysql
     ./1-mysql-server-start.sh
-  popd
+  cd ..
   $DOCKER exec -it $DEMO_CONTAINER bash
 }
 
-load_policy() {
-  ./ccloud-cli.sh append data ./policy/ansible-policy.yml
+##############################
+# Safe must exist
+# must have 'Conjur Sync' as a member
+# must contain value in MYSQL_ACCOUNT_NAME
+check_dependencies() {
+  echo "Verifying dependencies..."
+  if [[ "$(./pcloud-cli.sh safe_get $SAFE_NAME)" == "" ]]; then
+    echo "Safe $SAFE_NAME not found."
+    exit -1
+  fi
+  echo "Verified safe $SAFE_NAME exists."
+  if [[ "$(./pcloud-cli.sh safe_member $SAFE_NAME 'Conjur Sync')" == "" ]]; then
+    echo "Member 'Conjur Sync' not found in Safe $SAFE_NAME."
+    exit -1
+  fi
+  echo "Verified safe $SAFE_NAME contains 'Conjur Sync' as member."
+  if [[ "$(./pcloud-cli.sh safe_account $SAFE_NAME $ACCOUNT_NAME)" == "" ]]; then
+    echo "Account $ACCOUNT_NAME not found in Safe $SAFE_NAME."
+    exit -1
+  fi
+  echo "Verified safe $SAFE_NAME contains account name $ACCOUNT_NAME."
 }
 
+##############################
+load_policy() {
+  cat templates/ansible-policy.template		\
+  | sed -e "s#{{ WORKLOAD_ID }}#$WORKLOAD_ID#g" \
+  | sed -e "s#{{ SAFE_NAME }}#$SAFE_NAME#g"	\
+  > ansible-policy.yml
+  ./ccloud-cli.sh append data ./ansible-policy.yml
+  echo
+}
+
+##############################
 generate_identity_files() {
   CONJUR_AUTHN_API_KEY=$(./ccloud-cli.sh rotate $CONJUR_AUTHN_LOGIN)
 
@@ -44,6 +77,7 @@ cert_file: ""
 CONF_EOF
 }
 
+##############################
 build_image() {
   if [[ "$($DOCKER images -q $DEMO_IMAGE)" == "" ]]; then
     cd build
@@ -52,29 +86,45 @@ build_image() {
   fi
 }
 
+##############################
 start_container() {
     $DOCKER run -d \
     --name $DEMO_CONTAINER \
-    -e "MYSQL_LOGIN_HOST=$MYSQL_LOGIN_HOST" \
-    -e "MYSQL_LOGIN_PORT=$MYSQL_LOGIN_PORT" \
     -e "MYSQL_DB_NAME=$MYSQL_DB_NAME" \
-    -e "MYSQL_LOGIN_USER=$MYSQL_LOGIN_USER" \
-    -e "MYSQL_ROOT_PASSWORD_ID=$MYSQL_ROOT_PASSWORD_ID" \
+    -e "MYSQL_LOGIN_HOST_ID=$MYSQL_LOGIN_HOST_ID" \
+    -e "MYSQL_LOGIN_PORT_ID=$MYSQL_LOGIN_PORT_ID" \
+    -e "MYSQL_LOGIN_USER_ID=$MYSQL_LOGIN_USER_ID" \
+    -e "MYSQL_PASSWORD_ID=$MYSQL_PASSWORD_ID" \
     -e "TERM=xterm" \
     --restart always \
     --entrypoint "sh" \
     $DEMO_IMAGE \
     -c "sleep infinity"
-
-#    -e "CONJUR_LEADER_HOSTNAME=$CONJUR_CLOUD_URL" \
 }
 
+##############################
 initialize_demo() {
+  # copy conjur.* files to ansible container
   $DOCKER cp ./conjur.conf $DEMO_CONTAINER:/etc
   $DOCKER cp ./conjur.identity $DEMO_CONTAINER:/etc
   $DOCKER exec $DEMO_CONTAINER chmod 400 /etc/conjur.identity
   rm ./conjur*
+
+  # instantiate Summon secrets.yml file
+  create_summon_secrets_yml
+
+  # copy demo directory hierarchy to ansible container
   $DOCKER cp ./demo/. $DEMO_CONTAINER:/demo/
+}
+
+##############################
+create_summon_secrets_yml() {
+  cat templates/secrets.template				\
+  | sed -e "s#{{ MYSQL_LOGIN_HOST_ID }}#$MYSQL_LOGIN_HOST_ID#g"	\
+  | sed -e "s#{{ MYSQL_LOGIN_PORT_ID }}#$MYSQL_LOGIN_PORT_ID#g"	\
+  | sed -e "s#{{ MYSQL_LOGIN_USER_ID }}#$MYSQL_LOGIN_USER_ID#g"	\
+  | sed -e "s#{{ MYSQL_PASSWORD_ID }}#$MYSQL_PASSWORD_ID#g"	\
+  > ./demo/summon/secrets.yml
 }
 
 main $@

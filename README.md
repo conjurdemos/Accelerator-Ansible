@@ -8,6 +8,12 @@
 <Edited w/ sequencediagram.org>
 
 ## General steps:
+Assumptions:
+ - safe exists, conjur sync user added
+ - assume delegation/consumers already exists
+ - query for name of safe, check if exists & conjur sync is member
+ - document manual password change workflow
+
 1. provision a database with access creds
 2. fetch the creds
 3. perform an action in the database

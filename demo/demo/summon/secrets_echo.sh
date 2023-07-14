@@ -1,2 +1,0 @@
-#!/bin/bash 
-echo "MYSQL_ROOT_PASSWORD is $MYSQL_ROOT_PASSWORD"
