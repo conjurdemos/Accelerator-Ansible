@@ -1,0 +1,9 @@
+---
+- !host
+  id: 
+  annotations:
+    authn/api-key: true
+
+- !grant
+  role: !group vault//delegation/consumers
+  member: !host 

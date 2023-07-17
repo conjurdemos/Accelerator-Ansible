@@ -1,29 +1,38 @@
 # Accelerator Ansible
 
-## MVP Goals:
-- Demonstrate best-practices for Ansible w/ CyberArk Secrets Management
+## Goals:
+- Demonstrate best-practices for Ansible w/ CyberArk Secrets Management.
+- Provide templates for provisioning Ansible access to credentials managed by CyberArk.
 
-### Proposed workflow:
-![Ansible MVPv1](https://github.com/conjurdemos/Accelerator-Ansible/blob/main/Ansible-MVPv1.png?raw=true)
+### Workflow:
+![Ansible Workflow](https://github.com/conjurdemos/Accelerator-Ansible/blob/main/Ansible-Workflow.png?raw=true)
 <Edited w/ sequencediagram.org>
 
-## General steps:
-Assumptions:
- - safe exists, conjur sync user added
- - assume delegation/consumers already exists
- - query for name of safe, check if exists & conjur sync is member
- - document manual password change workflow
+## Manual Setup
+ - A Safe with a MySQL Account must exist
+ - The "Conjur Sync" user must be a member of the Safe
+ - The MySQL account is synced to Conjur Cloud
+ - Edit demo-vars with correct values for all <<YOUR_VALUE_HERE>> tags
 
-1. provision a database with access creds
-2. fetch the creds
-3. perform an action in the database
+## Start Script
+ - Checks for all dependencies:
+   - Environment variables are set
+   - Safe with MySQL Account and "Conjur Sync" user
+ - Creates Conjur workload, grants access to delegation/consumsers group for Safe
+ - Provisions Ansible container with Conjur workload identity
+ - Provisions MySQL server container w/ username/password
+ - Execs into Ansible container
 
-### Use-Case 1 - "Summon"
-1. provision a database with access creds
-2. fetch the creds
-3. perform an action in the database
+## Use-Case 1 - Ansible plugin
+ - Playbook retrieves all DB variables from Conjur Cloud with Conjur workload
+ - Creates database and loads test data
 
-### Use-Case 2 - Ansible plugin
-1. provision a database with access creds
-2. fetch the creds
-3. perform an action in the database
+## Use-Case 2 - Summon
+ - Summon retrieves all DB variables from Conjur Cloud with Conjur workload
+ - Playbook creates database and loads test data
+
+## Use-Case 3 - Password rotation
+ - Admin manually changes MySQL password in Safe account
+ - Privilege Cloud syncs changed password to Conjur Cloud 
+ - Admin updates MySQL DB with update-remote-root-password.sh script
+ - Retry use-cases 1 and/or 2

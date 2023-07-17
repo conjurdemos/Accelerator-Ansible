@@ -10,16 +10,16 @@ export DOCKER="docker"
 # hostname running this demo
 # - can be an FQDN or entry in local /etc/hosts
 # - cannot be 'localhost' or IP address
-export DOCKER_HOSTNAME=<<YOUR_VALUE_HERE>>
+export DOCKER_HOSTNAME='<<YOUR_VALUE_HERE>>'
 
 ##################################################
 # CyberArk tenant values
 
 # ID of your CyberArk Identity tenant, e.g. xyz1234
-export IDENTITY_TENANT_ID=<<YOUR_VALUE_HERE>>
+export IDENTITY_TENANT_ID='<<YOUR_VALUE_HERE>>'
 
 # Subdomain name for CyberArk tenant
-export CYBERARK_SUBDOMAIN_NAME=<<YOUR_VALUE_HERE>>
+export CYBERARK_SUBDOMAIN_NAME='<<YOUR_VALUE_HERE>>'
 
 ##################################################
 # Demo parameters
@@ -27,9 +27,9 @@ export CYBERARK_SUBDOMAIN_NAME=<<YOUR_VALUE_HERE>>
 # Name of Conjur workload identity to be created.
 # Ansible will use it to retrieve secrets managed in
 # the specified Safe and Account.
-export WORKLOAD_ID=<<YOUR_VALUE_HERE>>
-export SAFE_NAME=<<YOUR_VALUE_HERE>>
-export ACCOUNT_NAME=<<YOUR_VALUE_HERE>>
+export WORKLOAD_ID='<<YOUR_VALUE_HERE>>'
+export SAFE_NAME='<<YOUR_VALUE_HERE>>'
+export ACCOUNT_NAME='<<YOUR_VALUE_HERE>>'
 
 # name of test database for Ansible to create in MySQL server
 export MYSQL_DB_NAME=testdb

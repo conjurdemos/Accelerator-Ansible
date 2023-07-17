@@ -2,23 +2,34 @@ title Accelerator - Ansible w/ Conjur
 
 participant Admin
 participant User
-participant Summon
-participant Ansible
-participant Database
-participant Conjur
+control Ansible container
+database MySQL container
+entity Conjur Cloud
+entity Privilege Cloud
 
+box over Admin:Manual\nSetup
+Admin->Privilege Cloud:Privilege Cloud UI (PVWA)
+Privilege Cloud->Conjur Cloud:sync MySQL DB\naccount to Conjur
 
-Admin->Database:Provision DB w/ \nusername/password
-Admin->Conjur:Create secret, workload, grant access
+box over Admin: Setup\nScript
+Admin->Conjur Cloud: Retrieve DB server address,\nport, username, password
+Admin->MySQL container:Provision DB server w/ \nusername/password
+Admin->Conjur Cloud:Create Conjur workload,\nGrant workload access\nto MySQL server creds
+Admin->Ansible container:Provision Ansible container\nwith Conjur workload
 
-User->Ansible:Run playbook that uses\nplugin for Conjur
-Ansible->Conjur:Pull DB creds
-Ansible->Database:Load test data into DB
+box over User: Plugin\nDemo
+User->Ansible container:Run playbook that uses\nplugin for Conjur
+Ansible container->Conjur Cloud:Pull DB creds\nw/ Conjur workload
+Ansible container->MySQL container:Create database,\nLoad test data into DB
 
-User->Summon:Run Summon \nw/ Conjur workload
-Summon->Conjur:Pull DB creds
-Summon->Ansible:Run playbook that uses \nDB creds in env vars
-Ansible->Database:Load test data into DB
+box over User: Summon\nDemo
+User->Ansible container:Run Summon\nthat runs playbook
+Ansible container->Conjur Cloud:Pull DB creds\nw/ Conjur workload
+Ansible container->MySQL container:Create database,\nLoad test data into DB
 
+box over Admin:Manual\nPassword\nRotation
+Admin->Privilege Cloud:Change MySQL password in account
+Privilege Cloud->Conjur Cloud:sync updated password
+Admin->MySQL container:update-remote-root-password.sh
 
 

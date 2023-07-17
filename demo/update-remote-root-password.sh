@@ -3,7 +3,7 @@
 source ./demo-vars.sh
 
 echo
-echo "This script uses the CyberArk admin identity to retrieve the new databsae"
+echo "This script uses the CyberArk admin identity to retrieve the new database"
 echo "root password from Conjur, which is presumably the intended new value for"
 echo "the root password that was rotated in the vault and synced to Conjur."
 echo
