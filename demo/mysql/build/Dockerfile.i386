@@ -1,4 +1,4 @@
-FROM mysql:5.7.32
+FROM docker.io/mysql:5.7-debian
 
 # install utilities
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 467B942D3A79BD29 \

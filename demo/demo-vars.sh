@@ -1,10 +1,10 @@
-# Edit this file substituting correct values for <<YOUR_VALUE_HERE>>
+# Edit this file substituting correct values for '<<YOUR_VALUE_HERE>>'
 
 ##################################################
 # Local Docker values
 
 # Docker command
-export DOCKER="docker"
+export DOCKER="podman"
 #export DOCKER="sudo docker"
 
 # hostname running this demo
