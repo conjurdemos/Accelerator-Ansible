@@ -6,7 +6,6 @@
 
 ### Workflow:
 ![Ansible Workflow](https://github.com/conjurdemos/Accelerator-Ansible/blob/main/Ansible-Workflow.png?raw=true)
-<Edited w/ sequencediagram.org>
 
 ## Manual Setup
  - A Safe with a MySQL Account must exist
