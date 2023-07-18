@@ -18,5 +18,5 @@ case $ARCH in
     ;;
   *)
     echo
-    echo "Unrecognized CPU architecture."
+    echo "Unrecognized CPU architecture: $ARCH."
 esac
