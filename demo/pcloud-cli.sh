@@ -12,8 +12,9 @@ showUsage() {
   echo "Usage:"
   echo "      $0 safes_list"
   echo "      $0 safe_get <safe-name>"
-  echo "      $0 safe_member <safe-name> <member-name>"
-  echo "      $0 safe_account <safe-name> <account-name>"
+  echo "      $0 safe_member_get <safe-name> <member-name>"
+  echo "      $0 account_get <safe-name> <account-name>"
+  echo "      $0 account_set_mysql <safe-name> <account-name> <server-address> <server-port> <database-name> <username> <password>"
   exit -1
 }
 
@@ -29,28 +30,46 @@ main() {
 	;;
     safe_get)
 	if [[ $# != 2 ]]; then
+	  echo "Incorrect number of arguments."
 	  showUsage
 	fi
 	command=$1
 	safeName=$(urlify "$2")
 	;;
-    safe_member)
+    safe_member_get)
 	if [[ $# != 3 ]]; then
+	  echo "Incorrect number of arguments."
 	  showUsage
 	fi
 	command=$1
 	safeName=$(urlify "$2")
 	memberName=$(urlify "$3")
 	;;
-    safe_account)
+    account_get)
 	if [[ $# != 3 ]]; then
+	  echo "Incorrect number of arguments."
 	  showUsage
 	fi
 	command=$1
 	safeName=$(urlify "$2")
 	accountName=$(urlify "$3")
 	;;
+    account_set_mysql)
+	if [[ $# != 8 ]]; then
+	  echo "Incorrect number of arguments."
+	  showUsage
+	fi
+	command=$1
+	safeName=$(urlify "$2")
+	accountName=$(urlify "$3")
+	dbAddress=$(urlify "$4")
+	dbPort=$(urlify "$5")
+	dbName=$(urlify "$6")
+	dbUsername=$(urlify "$7")
+	dbPassword=$(urlify "$8")
+	;;
     *)
+	echo "Unrecognized command."
 	showUsage
 	;;
   esac
@@ -64,11 +83,20 @@ main() {
     safe_get)
 	safe_get "$safeName"
 	;;
-    safe_member)
-	safe_member "$safeName" "$memberName"
+    safe_member_get)
+	safe_member_get "$safeName" "$memberName"
 	;;
-    safe_account)
-	safe_account "$accountName"
+    account_get)
+	account_get "$safeName" "$accountName"
+	;;
+    account_set_mysql)
+	account_set_mysql	"$safeName"	\
+        			"$accountName"	\
+	        		"$dbAddress"	\
+       	 			"$dbPort"	\
+      		 		"$dbName"	\
+        			"$dbUsername"	\
+        			"$dbPassword"
 	;;
     *)
 	showUsage
@@ -112,7 +140,7 @@ function safe_get() {
 }
 
 #####################################
-function safe_member() {
+function safe_member_get() {
   $util_defaults
   $CURL 				\
 	-X GET				\
@@ -121,8 +149,12 @@ function safe_member() {
 }
 
 #####################################
-function safe_account {
+function account_get {
   $util_defaults
+
+# search example. but you cant search on account name
+#Accounts?limit=1&searchType=StartsWith&search={{ (instance_username + ' ' + instance_ip) | urlencode }}"
+
   filter=$(urlify "filter=safeName eq ${safeName}")
   printf -v query '.value[] | select(.name=="%s")' $accountName
   $CURL 				\
@@ -130,6 +162,47 @@ function safe_account {
 	-H "$authHeader"		\
 	"${PCLOUD_URL}/Accounts?$filter" \
 	| jq "$query"
+}
+
+#####################################
+function account_set_mysql {
+  $util_defaults
+
+  retCode=$($CURL 					\
+	--write-out '%{http_code}'			\
+	--output /dev/null				\
+	-X POST						\
+        -H 'Content-Type: application/json'		\
+	-H "$authHeader"				\
+	"${PCLOUD_URL}/Accounts"			\
+	-d		"{				\
+			  \"platformId\": \"MySQL\",	\
+			  \"safeName\": \"$safeName\",	\
+			  \"name\": \"$accountName\",	\
+			  \"address\": \"$dbAddress\",	\
+			  \"Port\": \"$dbPort\",	\
+			  \"database\": \"$dbName\",	\
+			  \"userName\": \"$dbUsername\",\
+			  \"secret\": \"$dbPassword\",	\
+			  \"secretType\": \"password\",	\
+			  \"secretManagement\": {				\
+			    \"automaticManagementEnabled\": false,		\
+			    \"manualManagementReason\": \"Created for demo\"	\
+			  },							\
+			}"							\
+	)
+
+  case $retCode in
+    200)
+	echo "Account created"
+	;;
+    409)
+	echo "Account already exists. Please confirm values in vault are correct."
+	;;
+    *)
+	echo "account_set_mysql: Unknown return code: $retCode"
+	;;
+  esac
 }
 
 #####################################
