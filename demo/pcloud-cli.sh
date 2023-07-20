@@ -10,6 +10,7 @@ util_defaults="set -u"
 
 showUsage() {
   echo "Usage:"
+  echo "      $0 get_auth_token"
   echo "      $0 safes_list"
   echo "      $0 safe_get <safe-name>"
   echo "      $0 safe_member_get <safe-name> <member-name>"
@@ -22,10 +23,13 @@ main() {
   checkDependencies
 
   case $1 in
+    get_auth_token)
+	command=$1
+  	pcloud_authenticate
+	echo $jwToken
+	exit
+	;;
     safes_list)
-	if [[ $# != 1 ]]; then
-	  showUsage
-	fi
 	command=$1
 	;;
     safe_get)
@@ -102,17 +106,13 @@ main() {
 	showUsage
 	;;
   esac
-
-  exit 0
-
-
 }
 
 #####################################
 # sets the global authorization header used in api calls for other methods
 function pcloud_authenticate() {
   $util_defaults
-  jwToken=$($CURL \
+  jwToken=$($CURL 					\
         -X POST \
         https://$IDENTITY_TENANT_ID.id.cyberark.cloud/oauth2/platformtoken \
         -H "Content-Type: application/x-www-form-urlencoded"      	\
@@ -170,7 +170,7 @@ function account_set_mysql {
 
   retCode=$($CURL 					\
 	--write-out '%{http_code}'			\
-	--output /dev/null				\
+	--output /dev/ull				\
 	-X POST						\
         -H 'Content-Type: application/json'		\
 	-H "$authHeader"				\
@@ -180,28 +180,37 @@ function account_set_mysql {
 			  \"safeName\": \"$safeName\",	\
 			  \"name\": \"$accountName\",	\
 			  \"address\": \"$dbAddress\",	\
-			  \"Port\": \"$dbPort\",	\
-			  \"database\": \"$dbName\",	\
-			  \"userName\": \"$dbUsername\",\
-			  \"secret\": \"$dbPassword\",	\
-			  \"secretType\": \"password\",	\
+			  \"platformAccountProperties\": {			\
+			    \"Port\": \"$dbPort\",				\
+			    \"Database\": \"$dbName\"				\
+			  },							\
+			  \"userName\": \"$dbUsername\",			\
+			  \"secret\": \"$dbPassword\",				\
+			  \"secretType\": \"password\",				\
 			  \"secretManagement\": {				\
 			    \"automaticManagementEnabled\": false,		\
 			    \"manualManagementReason\": \"Created for demo\"	\
-			  },							\
-			}"							\
+			  }							\
+			}"
 	)
 
   case $retCode in
-    200)
-	echo "Account created"
-	;;
+    201)
+        echo "Account created."
+       ;;
     409)
-	echo "Account already exists. Please confirm values in vault are correct."
-	;;
+        echo "Account already exists. Please confirm values in vault are correct."
+        ;;
+    403)
+        echo "$0:account_set_mysql()"
+	echo "  Unable to create account $accountName in safe $safeName."
+	echo "  Check user $PCLOUD_ADMIN_USER is a member of the safe and has sufficient permissions."
+        exit -1
+        ;;
     *)
-	echo "account_set_mysql: Unknown return code: $retCode"
-	;;
+        echo "$0:account_set_mysql: Unknown return code: $retCode"
+        exit -1
+        ;;
   esac
 }
 

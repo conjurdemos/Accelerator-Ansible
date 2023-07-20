@@ -11,7 +11,7 @@ export DOCKER="docker"
 
 # hostname running this demo
 # - can be an FQDN, IP address or entry in local /etc/hosts
-# - cannot be 'localhost'
+# - cannot be 'localhost' or 127.0.0.1
 export DOCKER_HOSTNAME=$(hostname)
 
 ##################################################
@@ -26,18 +26,13 @@ export CYBERARK_SUBDOMAIN_NAME='<<YOUR_VALUE_HERE>>'
 ##################################################
 # Demo parameters
 
-# Name of Conjur workload identity to be created.
-# Ansible will use it to retrieve secrets managed in
-# the specified Safe and Account.
-export WORKLOAD_ID=ansible-xlr8r
-
 # Safe to contain MySQL account - must already exist
 export SAFE_NAME='<<YOUR_VALUE_HERE>>'
 
 # MySQL account values for account to be created during setup
-export MYSQL_ACCOUNT_NAME=MySQL-DB
+export MYSQL_ACCOUNT_NAME='<<YOUR_VALUE_HERE>>'
 
-# DNS name or IP address of MySQL DB
+# DNS name or IP address of MySQL DB container
 export MYSQL_SERVER_ADDRESS=$DOCKER_HOSTNAME
 
 # MySQL default port is 3306
@@ -46,6 +41,11 @@ export MYSQL_INITIAL_ROOT_PASSWORD=In1t1alR00tPa55w0rd
 
 # name of a database for Ansible to create in MySQL server
 export MYSQL_DB_NAME=testdb
+
+# Name of Conjur workload identity to be created.
+# Ansible will use it to retrieve secrets managed in
+# the specified Safe and Account.
+export WORKLOAD_ID=ansible-xlr8r
 
 ###########################################################
 # NO NEED TO CHANGE ANYTHING BELOW THIS LINE
@@ -62,10 +62,10 @@ export DEMO_CONTAINER=ansible-xlr8r
 # Database container
 export MYSQL_IMAGE=mysql-5.7:ansible
 export MYSQL_SERVER=mysql-xlr8r
-export MYSQL_LOGIN_HOST_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/address
-export MYSQL_LOGIN_PORT_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/Port
-export MYSQL_LOGIN_USER_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/username
-export MYSQL_PASSWORD_ID=data/vault/$SAFE_NAME/$ACCOUNT_NAME/password
+export MYSQL_LOGIN_HOST_ID=data/vault/$SAFE_NAME/$MYSQL_ACCOUNT_NAME/address
+export MYSQL_LOGIN_PORT_ID=data/vault/$SAFE_NAME/$MYSQL_ACCOUNT_NAME/Port
+export MYSQL_LOGIN_USER_ID=data/vault/$SAFE_NAME/$MYSQL_ACCOUNT_NAME/username
+export MYSQL_PASSWORD_ID=data/vault/$SAFE_NAME/$MYSQL_ACCOUNT_NAME/password
 
 # Prompt for admin user name if not already set
 if [[ "$CYBERARK_ADMIN_USER" == "" ]]; then

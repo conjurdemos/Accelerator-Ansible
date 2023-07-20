@@ -16,8 +16,8 @@ main() {
   start_container
   initialize_demo
   # Intialize DB
-  export MYSQL_ROOT_PASSWORD=$(./ccloud-cli.sh get $MYSQL_PASSWORD_ID)
-  export MYSQL_LOGIN_PORT=$(./ccloud-cli.sh get $MYSQL_LOGIN_PORT_ID)
+  export MYSQL_ROOT_PASSWORD=$MYSQL_INITIAL_ROOT_PASSWORD
+  export MYSQL_LOGIN_PORT=$MYSQL_SERVER_PORT
   cd mysql
     ./1-mysql-server-start.sh
   cd ..
@@ -54,7 +54,12 @@ function verify_env_vars() {
     all_deps_good=false
   fi
 
+
   if $all_deps_good; then
+    if [[ $(./pcloud-cli.sh get_auth_token) == null ]]; then
+      echo "Invalid user name or password for $PCLOUD_ADMIN_USER."
+      exit -1
+    fi
     echo "Verified all env vars are set."
   else
     echo "Please address above issues and retry."
@@ -70,19 +75,30 @@ function verify_vault_setup() {
 # Steps below verify
 # - Safe named $SAFE_NAME exists
 # - Safe has 'Conjur Sync' as a member
+# - Safe has the admin user $PCLOUD_ADMIN_USER as a member
 
   all_deps_good=true
 
   echo "Verifying safe $SAFE_NAME exists..."
   if [[ "$(./pcloud-cli.sh safe_get $SAFE_NAME)" == "" ]]; then
-    echo "Safe $SAFE_NAME not found."
+    echo "Safe $SAFE_NAME not found. Make sure $PCLOUD_ADMIN_USER is a member with full permissions."
     all_deps_good=false
   fi
 
-  echo "Verifying safe $SAFE_NAME contains member 'Conjur Sync'..."
-  if [[ "$(./pcloud-cli.sh safe_member $SAFE_NAME 'Conjur Sync')" == "" ]]; then
-    echo "Member 'Conjur Sync' not found in Safe $SAFE_NAME."
-    all_deps_good=false
+  if $all_deps_good; then
+    echo "Verifying safe $SAFE_NAME contains member $PCLOUD_ADMIN_USER..."
+    if [[ "$(./pcloud-cli.sh safe_member $SAFE_NAME $PCLOUD_ADMIN_USER)" == "" ]]; then
+      echo "Member $PCLOUD_ADMIN_USER not found in Safe $SAFE_NAME."
+      all_deps_good=false
+    fi
+  fi
+
+  if $all_deps_good; then
+    echo "Verifying safe $SAFE_NAME contains member 'Conjur Sync'..."
+    if [[ "$(./pcloud-cli.sh safe_member $SAFE_NAME 'Conjur Sync')" == "" ]]; then
+      echo "Member 'Conjur Sync' not found in Safe $SAFE_NAME."
+      all_deps_good=false
+    fi
   fi
 
   if $all_deps_good; then
@@ -102,15 +118,18 @@ function create_mysql_account() {
   echo "     Server port: $MYSQL_SERVER_PORT"
   echo "        Username: root"
   echo "        Password: $MYSQL_INITIAL_ROOT_PASSWORD"
-  echo "No database name - this account is for the root user."
+  echo "   Database name: None - this account is for the root user."
 
   ./pcloud-cli.sh account_set_mysql 	"$SAFE_NAME" 		\
 					"$MYSQL_ACCOUNT_NAME" 	\
 					"$MYSQL_SERVER_ADDRESS" \
 					"$MYSQL_SERVER_PORT" 	\
-					"" 			\
+					"mysql" 		\
 					"root" 			\
-					"$MYSQL_INITIAL_ROOT PASSWORD"
+					"$MYSQL_INITIAL_ROOT_PASSWORD"
+  if [[ $? != 0 ]]; then
+    exit -1
+  fi
 }
 
 ##############################
