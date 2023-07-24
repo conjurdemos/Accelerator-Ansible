@@ -33,10 +33,10 @@ The Privilege Cloud admin can use the PVWA UI to change the MySQL DBA password a
  - update-remote-root-password.sh - script to update the MySQL remote root login password after it has been changed in Privilege Cloud.
 
 ## STEP ONE: Manual Setup
- - A Privilege Cloud admin must create Safe to hold the MySQL DBA account
+ - A Privilege Cloud admin must create a Safe to hold the MySQL DBA account
  - The "Conjur Sync" user must be a member of the Safe
- - The variables set in demo-vars.sh drive the demo for your environment.
- - Edit demo-vars with correct values:
+ - The variables set in the file demo-vars.sh drive the demo for your environment.
+ - Update demo-vars.sh with correct values:
    - DOCKER - Set to the appropriate command for Docker or Podman.
    - DOCKER_HOSTNAME - This is the DNS resolveable name or IP address for the host running the demo. It is how Ansible connects to the MySQL container.
    - IDENTITY_TENANT_ID - This value is three lower-case letters and four numbers, and is the first value in the URL for your CyberArk Identity tenant. It has the form (for example): https://abc1234.id.cyberark.cloud
