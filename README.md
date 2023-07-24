@@ -87,7 +87,7 @@ Unless you are experimenting, do not change anything else in the demo-vars.sh fi
    - Summon uses Conjur workload to retrieve DB variables from Conjur Cloud as environment variables, then runs playbook
    - Playbook uses env vars to create database and loads test data
    - Use this command sequence to view the database that Ansible created:
-     - mysql -h $MYSQL_SERVER_ADDRESS -P $MYSQL_SERVER_PORT -u root -p
+     - mysql -h $MYSQL_SERVER_ADDRESS -P $MYSQL_SERVER_PORT -u root -p	\
 	<enter current MySQL remote root password - cut/paste from Ansible output)   - at mysql prompt:
        - show databases;
        - use testdb; (or whatever name you specified in demo-vars.sh)
