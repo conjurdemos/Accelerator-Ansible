@@ -42,22 +42,22 @@ The Privilege Cloud admin can use the PVWA UI to change the MySQL DBA password a
    - IDENTITY_TENANT_ID - This value is three lower-case letters and four numbers, and is the first value in the URL for your CyberArk Identity tenant. It has the form (for example): https://abc1234.id.cyberark.cloud
    - CYBERARK_SUBDOMAIN_NAME - This value is likely your company or organization name, and is the first value in the Privilege Cloud and Conjur Cloud URLs. It has the form (for example): https://acmecorp.cyberark.cloud
    - SAFE_NAME - This value must be the name of the MySQL DBA safe created manually.
-   - MYSQL_ACCOUNT_NAME - This will be the name of the MySQL DBA account.
-   - MYSQL_SERVER_ADDRESS - this should be the hostname of your Docker host where the MySQL container will run.
+   - MYSQL_ACCOUNT_NAME - The start script will use this name for the MySQL DBA account.
+   - MYSQL_SERVER_ADDRESS - This must be the same value as DOCKER_HOSTNAME. It should be the DNS name or IP address of your Docker host where the MySQL container will run.
    - MYSQL_SERVER_PORT - The default port for MySQL is 3306. You only need to change this if there is another process using that port.
-   - MYSQL_INITIAL_ROOT_PASSWORD - This will be the MySQL root user password and will not change for root logins from the localhost (i.e. from within in the MySQL container). The remote root login password can be updated using the update-remote-root-password.sh script. This effects password rotation in the MySQL server.
+   - MYSQL_INITIAL_ROOT_PASSWORD - This will be the initial password for local and remote MySQL root users. It will not change for the local root user (i.e. root login from within in the MySQL container). The remote root login password is what Ansible uses to access MySQL. It can be updated using the update-remote-root-password.sh script. This effects password rotation in the MySQL server.
    - MYSQL_DB_NAME - This is the name of the test database that Ansible will create. You can change it, or not.
    - WORKLOAD_ID - This is the name of the Conjur host identity that will be used by the Ansible plugin and Summon to retrieve the MySQL DBA credentials from Conjur. You can change it, or not.
 
-Unless you are experimenting, there is no need to edit anything else in the demo-vars.sh file. Doing so could easily break the demo.
+Unless you are experimenting, do not change anything else in the demo-vars.sh file. Doing so could easily break the demo.
 
 ## STEP TWO: Start Script
  - Run the start script with the command: ./start
  - The script performs the following:
-   - Checks for all dependencies:
-     - Environment variables are set
+   - Checks all dependencies are met:
+     - All environment variables are set
      - Safe with SAFE_NAME exits with "Conjur Sync" as member
-   - Creates MYSQL_ACCOUNT_NAME in SAFE_NAME with MYSQL_* property values
+   - Creates MYSQL_ACCOUNT_NAME in SAFE_NAME with property values from MYSQL_* vars as described above
    - Creates Conjur workload, grants SAFE_NAME delegation/consumers group role
    - Provisions Ansible container with Conjur workload identity
    - Provisions MySQL server container w/ root username/password
