@@ -1,0 +1,9 @@
+---
+- !host
+  id: ansible-xlr8r
+  annotations:
+    authn/api-key: true
+
+- !grant
+  role: !group vault/JodyDemo/delegation/consumers
+  member: !host ansible-xlr8r

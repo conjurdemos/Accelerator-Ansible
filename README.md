@@ -15,6 +15,12 @@ A Privilege cloud admin must manually create a Safe and add the Conjur Sync user
 
 The Privilege Cloud admin can use the PVWA UI to change the MySQL DBA password and once it is synced to Conjur, a script can update the root password in the MySQL container. The plugin & Summon demos can be rerun to show how Ansible uses the changed password.
 
+## Prerequisites
+ - Admin access to a NON-PRODUCTION Cyberark Identity tenant
+ - Admin access to a NON-PRODUCTION CyberArk Privilege Cloud tenant
+ - Admin access to a NON-PRODUCTION CyberArk Conjur Cloud tenant
+ - A Linux or MacOS environment with Docker or Podman installed
+ 
 ## Description of Contents
  - README.md - this file.
  - Ansible-Workflow.png - a sequence diagram graphic (see below).

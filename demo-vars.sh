@@ -18,25 +18,26 @@ export DOCKER_HOSTNAME=$(hostname)
 # CyberArk tenant values
 
 # ID of your CyberArk Identity tenant, e.g. xyz1234
-export IDENTITY_TENANT_ID='<<YOUR_VALUE_HERE>>'
+#export IDENTITY_TENANT_ID='<<YOUR_VALUE_HERE>>'
+export IDENTITY_TENANT_ID=aao4987
 
 # Subdomain name for CyberArk tenant, typically your company name
-export CYBERARK_SUBDOMAIN_NAME='<<YOUR_VALUE_HERE>>'
+export CYBERARK_SUBDOMAIN_NAME=cybr-secrets
 
 ##################################################
 # Demo parameters
 
 # Safe to contain MySQL account - must already exist
-export SAFE_NAME='<<YOUR_VALUE_HERE>>'
+export SAFE_NAME=JodyDemo
 
 # MySQL account values for account to be created during setup
-export MYSQL_ACCOUNT_NAME='<<YOUR_VALUE_HERE>>'
+export MYSQL_ACCOUNT_NAME=MySQL-DBA
 
 # DNS name or IP address of MySQL DB container
 export MYSQL_SERVER_ADDRESS=$DOCKER_HOSTNAME
 
 # MySQL default port is 3306
-export MYSQL_SERVER_PORT=3306
+export MYSQL_SERVER_PORT=3307
 export MYSQL_INITIAL_ROOT_PASSWORD=In1t1alR00tPa55w0rd
 
 # name of a database for Ansible to create in MySQL server
