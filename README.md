@@ -24,7 +24,7 @@ The Privilege Cloud admin can use the PVWA UI to change the MySQL DBA password a
 ## Description of Contents
  - README.md - this file.
  - Ansible-Workflow.png - a sequence diagram graphic (see below).
- - Ansible-seq-diagram.txt - source test for the sequence diagram.
+ - Ansible-seq-diagram.txt - source text for the sequence diagram.
  - build - build directory for the Ansible container.
  - ccloud-cli.sh - a limited admin CLI for Conjur Cloud.
  - demo - demo directory copied into Ansible container.
