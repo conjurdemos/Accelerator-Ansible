@@ -56,10 +56,11 @@ Unless you are experimenting, do not change anything else in the demo-vars.sh fi
 ### NOTE: The start script requires a CyberArk Identity Oauth2 confidential client service user to perform automated admin operations in Privilege Cloud and Conjur Cloud. The service user must be granted Privilege Cloud Admin and Conjur Cloud Admin roles. The start script will prompt for the name of the user and its password. It will not persist those values.
 
  - Run the start script with the command: ./start
+ - Provide the Admin service users name and password when prompted
  - The script performs the following:
    - Checks all dependencies are met:
      - All environment variables are set
-     - Safe with SAFE_NAME exits with "Conjur Sync" as member
+     - A Safe with SAFE_NAME exists and has "Conjur Sync" as a member
    - Creates MYSQL_ACCOUNT_NAME in SAFE_NAME with property values from MYSQL_* vars as described above
    - Creates Conjur workload, grants SAFE_NAME delegation/consumers group role
    - Provisions Ansible container with Conjur workload identity
