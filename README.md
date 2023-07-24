@@ -43,7 +43,7 @@ The Privilege Cloud admin can use the PVWA UI to change the MySQL DBA password a
 where 'abc1234' is the tenant ID.
    - CYBERARK_SUBDOMAIN_NAME - This value is likely your company or organization name, and is the first value in the Privilege Cloud and Conjur Cloud URLs. That URL has the form (for example): https://acmecorp.cyberark.cloud \
 where 'acmecorp' is the subdomain name.
-   - SAFE_NAME - This value must be the name of the MySQL DBA safe created manually.
+   - SAFE_NAME - This value must be the name of the MySQL DBA safe created manually. It is case sensitive.
    - MYSQL_ACCOUNT_NAME - The start script will use this name for the MySQL DBA account.
    - MYSQL_SERVER_ADDRESS - This must be the same value as DOCKER_HOSTNAME. It should be the DNS name or IP address of your Docker host where the MySQL container will run.
    - MYSQL_SERVER_PORT - The default port for MySQL is 3306. You only need to change this if there is another process using that port.
