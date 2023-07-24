@@ -52,6 +52,9 @@ The Privilege Cloud admin can use the PVWA UI to change the MySQL DBA password a
 Unless you are experimenting, do not change anything else in the demo-vars.sh file. Doing so could easily break the demo.
 
 ## STEP TWO: Start Script
+
+### NOTE: The start script requires a CyberArk Identity Oauth2 confidential client service user to perform automated admin operations in Privilege Cloud and Conjur Cloud. The service user must be granted Privilege Cloud Admin and Conjur Cloud Admin roles. The start script will prompt for the name of the user and its password. It will not persist those values.
+
  - Run the start script with the command: ./start
  - The script performs the following:
    - Checks all dependencies are met:
