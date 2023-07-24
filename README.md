@@ -78,7 +78,7 @@ Unless you are experimenting, do not change anything else in the demo-vars.sh fi
    - Use this command sequence to view the database that Ansible created:
      - mysql -h \<mysql-server-address\> -P \<mysql-server-port\> -u root -p \
        \<enter current MySQL remote root password at prompt\>
-     - Note that values in angle brackets can be cut/pasted from Ansible output
+     - Note that address, port and password values can be cut/pasted from Ansible output. Specifying the port is optional if the default 3306 is used.
      - At the mysql prompt enter these commands:
        - show databases;
        - use testdb; (or whatever name you specified for the database in demo-vars.sh)
@@ -93,7 +93,7 @@ Unless you are experimenting, do not change anything else in the demo-vars.sh fi
    - Use this command sequence to view the database that Ansible created:
      - mysql -h \<mysql-server-address\> -P \<mysql-server-port\> -u root -p \
        \<enter current MySQL remote root password at prompt\>
-     - Note that values in angle brackets can be cut/pasted from Ansible output
+     - Note that address, port and password values can be cut/pasted from Ansible output. Specifying the port is optional if the default 3306 is used.
      - At the mysql prompt enter these commands:
        - show databases;
        - use testdb; (or whatever name you specified for the database in demo-vars.sh)
