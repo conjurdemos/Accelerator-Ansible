@@ -40,7 +40,7 @@ The Privilege Cloud admin can use the PVWA UI to change the MySQL DBA password a
    - DOCKER - Set to the appropriate command for Docker or Podman.
    - DOCKER_HOSTNAME - This is the DNS resolveable name or IP address for the host running the demo. It is how Ansible connects to the MySQL container.
    - IDENTITY_TENANT_ID - This value is three lower-case letters and four numbers, and is the first value in the URL for your CyberArk Identity tenant. It has the form (for example): https://abc1234.id.cyberark.cloud
-   - CYBERARK_SUBDOMAIN_NAME - This value is likely your company or organizationname, and is the first value in the Privilege Cloud and Conjur Cloud URLs. It has the form (for example): https://acmecorp.cyberark.cloud
+   - CYBERARK_SUBDOMAIN_NAME - This value is likely your company or organization name, and is the first value in the Privilege Cloud and Conjur Cloud URLs. It has the form (for example): https://acmecorp.cyberark.cloud
    - SAFE_NAME - This value must be the name of the MySQL DBA safe created manually.
    - MYSQL_ACCOUNT_NAME - This will be the name of the MySQL DBA account.
    - MYSQL_SERVER_ADDRESS - this should be the hostname of your Docker host where the MySQL container will run.
@@ -49,17 +49,18 @@ The Privilege Cloud admin can use the PVWA UI to change the MySQL DBA password a
    - MYSQL_DB_NAME - This is the name of the test database that Ansible will create. You can change it, or not.
    - WORKLOAD_ID - This is the name of the Conjur host identity that will be used by the Ansible plugin and Summon to retrieve the MySQL DBA credentials from Conjur. You can change it, or not.
 
-Unless you are experimenting, there is no need to edit anything else in the demo-vars.sh file.
+Unless you are experimenting, there is no need to edit anything else in the demo-vars.sh file. Doing so could easily break the demo.
 
 ## STEP TWO: Start Script
  - Run the start script with the command: ./start
  - The script performs the following:
    - Checks for all dependencies:
      - Environment variables are set
-     - Safe with MySQL Account and "Conjur Sync" user
-   - Creates Conjur workload, grants access to delegation/consumsers group for Safe
+     - Safe with SAFE_NAME exits with "Conjur Sync" as member
+   - Creates MYSQL_ACCOUNT_NAME in SAFE_NAME with MYSQL_* property values
+   - Creates Conjur workload, grants SAFE_NAME delegation/consumers group role
    - Provisions Ansible container with Conjur workload identity
-   - Provisions MySQL server container w/ username/password
+   - Provisions MySQL server container w/ root username/password
    - Execs into Ansible container
 
 ## Use-Case 1 - Ansible plugin
