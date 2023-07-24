@@ -9,12 +9,12 @@ entity Privilege Cloud
 
 box over Admin:Manual\nSetup
 Admin->Privilege Cloud:Privilege Cloud UI (PVWA)
-Privilege Cloud->Conjur Cloud:sync MySQL DB\naccount to Conjur
+Privilege Cloud->Conjur Cloud:create DBA Safe w/\nConjur Sync member
 
 box over Admin: Setup\nScript
-Admin->Conjur Cloud: Retrieve DB server address,\nport, username, password
+Admin->Privilege Cloud: create MySQL DBA account w/ address, port, username, password in DBA Safe
 Admin->MySQL container:Provision DB server w/ \nusername/password
-Admin->Conjur Cloud:Create Conjur workload,\nGrant workload access\nto MySQL server creds
+Admin->Conjur Cloud:Create Conjur workload,\nGrant workload access\nto MySQL DBA creds
 Admin->Ansible container:Provision Ansible container\nwith Conjur workload
 
 box over User: Plugin\nDemo
