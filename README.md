@@ -19,7 +19,7 @@ The Privilege Cloud admin can use the PVWA UI to change the MySQL DBA password a
  - Admin access to a NON-PRODUCTION Cyberark Identity tenant
  - Admin access to a NON-PRODUCTION CyberArk Privilege Cloud tenant
  - Admin access to a NON-PRODUCTION CyberArk Conjur Cloud tenant
- - A Linux or MacOS environment with Docker or Podman installed
+ - A MacOS or Linux VM environment with Docker or Podman installed
  
 ## Description of Contents
  - README.md - this file.
