@@ -11,25 +11,25 @@ box over Admin:Manual\nSetup
 Admin->Privilege Cloud:Privilege Cloud UI (PVWA)
 Privilege Cloud->Conjur Cloud:create DBA Safe w/\nConjur Sync member
 
-box over Admin: Setup\nScript
-Admin->Privilege Cloud: create MySQL DBA account w/ address, port, username, password in DBA Safe
+box over Admin: Start\nScript
+Admin->Privilege Cloud:start script  creates MySQL DBA account\nw/ address, port, username, password in DBA Safe
 Admin->MySQL container:Provision DB server w/ \nusername/password
 Admin->Conjur Cloud:Create Conjur workload,\nGrant workload access\nto MySQL DBA creds
 Admin->Ansible container:Provision Ansible container\nwith Conjur workload
 
 box over User: Plugin\nDemo
-User->Ansible container:Run playbook that uses\nplugin for Conjur
-Ansible container->Conjur Cloud:Pull DB creds\nw/ Conjur workload
+User->Ansible container:0-run-demo.sh script\nruns playbook
+Ansible container->Conjur Cloud:Ansible plugin\npulls DB creds\nw/ Conjur workload
 Ansible container->MySQL container:Create database,\nLoad test data into DB
 
 box over User: Summon\nDemo
-User->Ansible container:Run Summon\nthat runs playbook
-Ansible container->Conjur Cloud:Pull DB creds\nw/ Conjur workload
+User->Ansible container:0-run-demo.sh script\ncalls Summon\nthat runs playbook
+Ansible container->Conjur Cloud:Summon provider\npulls DB creds\nw/ Conjur workload
 Ansible container->MySQL container:Create database,\nLoad test data into DB
 
 box over Admin:Manual\nPassword\nRotation
 Admin->Privilege Cloud:Change MySQL password in account
-Privilege Cloud->Conjur Cloud:sync updated password
-Admin->MySQL container:update-remote-root-password.sh
+Privilege Cloud->Conjur Cloud:Sync updated password
+Admin->MySQL container:update-remote-root-password.sh script\nupdates password in MySQL server
 
 
