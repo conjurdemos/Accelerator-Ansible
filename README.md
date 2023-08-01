@@ -9,7 +9,7 @@
  - Admin access to a NON-PRODUCTION CyberArk Privilege Cloud tenant
  - Admin access to a NON-PRODUCTION CyberArk Conjur Cloud tenant
  - A CyberArk Identity service user & oauth2 confidential client with the Privilege Cloud Users and Conjur Admin roles.
- - A Safe in Privilege Cloud with the above service user as member with Access and Account Management permissions.
+ - A Safe in Privilege Cloud with the above service user as member with Access and Account Management permissions, and the 'Conjur Sync' user as member with Access and Workflow permissions.
  - A demo host - a MacOS or Linux VM environment with Docker or Podman installed
  - There is no need to install Ansible or MySQL. The start.sh script will build two containers, one for Ansible OSS and one for the MySQL DB server.
  - Make sure all scripts are executable. Run: chmod -R +x *.sh
