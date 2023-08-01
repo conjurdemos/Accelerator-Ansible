@@ -3,6 +3,8 @@
 ## Goals:
 - Demonstrate best-practices for Ansible w/ CyberArk Secrets Management.
 - Provide example workflows for provisioning Ansible access to credentials managed by CyberArk.
+- For a detailed description:
+  - https://github.com/conjurdemos/Accelerator-Ansible#description-of-demo
 
 ## Prerequisites
  - Admin access to a NON-PRODUCTION Cyberark Identity tenant
