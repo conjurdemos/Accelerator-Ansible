@@ -1,2 +1,0 @@
-#!/bin/bash
-mysql -h $MYSQL_LOGIN_HOST -P $MYSQL_LOGIN_PORT -u $MYSQL_LOGIN_USER -p

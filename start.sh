@@ -1,6 +1,12 @@
 #!/bin/bash
 source ./demo-vars.sh
 
+if [[ "$($DOCKER version | grep Version)" == "" ]]; then
+  echo $DOCKER "does not seem to be installed."
+  echo "Check the DOCKER variable in demo-vars.sh"
+  exit -1
+fi
+
 main() {
   if [[ "$($DOCKER ps | grep $DEMO_CONTAINER)" != "" ]]; then
     echo "Stopping and removing demo container..."
@@ -28,21 +34,12 @@ main() {
 function verify_env_vars() {
   all_deps_good=true
 
-  echo "Verifying env vars..."
-  if [[ "$DOCKER_HOSTNAME" == '<<YOUR_VALUE_HERE>>' ]]; then
-    echo "Env var DOCKER_HOSTNAME must be set to a proper value in demo-vars.sh."
+  if [[ "$IDENTITY_TENANT_URL" == '<<YOUR_VALUE_HERE>>' ]]; then
+    echo "Env var IDENTITY_TENANT_URL must be set to a proper value in demo-vars.sh."
     all_deps_good=false
   fi
-  if [[ "$IDENTITY_TENANT_ID" == '<<YOUR_VALUE_HERE>>' ]]; then
-    echo "Env var IDENTITY_TENANT_ID must be set to a proper value in demo-vars.sh."
-    all_deps_good=false
-  fi
-  if [[ "$CYBERARK_SUBDOMAIN_NAME" == "<<YOUR_VALUE_HERE>>" ]]; then
-    echo "Env var CYBERARK_SUBDOMAIN_NAME must be set to a proper value in demo-vars.sh."
-    all_deps_good=false
-  fi
-  if [[ "$WORKLOAD_ID" == "<<YOUR_VALUE_HERE>>" ]]; then
-    echo "Env var WORKLOAD_ID must be set to a proper value in demo-vars.sh."
+  if [[ "$PCLOUD_TENANT_URL" == '<<YOUR_VALUE_HERE>>' ]]; then
+    echo "Env var PCLOUD_TENANT_URL must be set to a proper value in demo-vars.sh."
     all_deps_good=false
   fi
   if [[ "$SAFE_NAME" == "<<YOUR_VALUE_HERE>>" ]]; then
@@ -53,7 +50,10 @@ function verify_env_vars() {
     echo "Env var MYSQL_ACCOUNT_NAME must be set to a proper value in demo-vars.sh."
     all_deps_good=false
   fi
-
+  if [[ "$WORKLOAD_ID" == "<<YOUR_VALUE_HERE>>" ]]; then
+    echo "Env var WORKLOAD_ID must be set to a proper value in demo-vars.sh."
+    all_deps_good=false
+  fi
 
   if $all_deps_good; then
     if [[ $(./pcloud-cli.sh get_auth_token) == null ]]; then

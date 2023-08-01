@@ -1,39 +1,42 @@
 # Edit this file substituting correct values for '<<YOUR_VALUE_HERE>>'
 
 ##################################################
-# Local Docker values
+# Local container management
 
 # Docker command
 export DOCKER="docker"
 #export DOCKER="sudo docker"
+
 # for RHEL hosts
 #export DOCKER="podman"
-
-# hostname running this demo
-# - can be an FQDN, IP address or entry in local /etc/hosts
-# - cannot be 'localhost' or 127.0.0.1
-export DOCKER_HOSTNAME=$(hostname)
 
 ##################################################
 # CyberArk tenant values
 
-# ID of your CyberArk Identity tenant, e.g. xyz1234
-export IDENTITY_TENANT_ID='<<YOUR_VALUE_HERE>>'
+# URL of your CyberArk Identity tenant
+export IDENTITY_TENANT_URL='<<YOUR_VALUE_HERE>>'
 
-# Subdomain name for CyberArk tenant, typically your company name
-export CYBERARK_SUBDOMAIN_NAME=cybr-secrets
+# URL of your CyberArk Privilege Cloud tenant
+export PCLOUD_TENANT_URL='<<YOUR_VALUE_HERE>>'
 
 ##################################################
 # Demo parameters
 
 # Safe to contain MySQL account - must already exist
+# and be synced to Conjur
 export SAFE_NAME='<<YOUR_VALUE_HERE>>'
 
-# MySQL account values for account to be created during setup
-export MYSQL_ACCOUNT_NAME='<<YOUR_VALUE_HERE>>'
+###########################################################
+# THERE SHOULD BE NO NEED TO CHANGE ANYTHING BELOW THIS LINE.
+# ALL VALUES BELOW ARE DEFAULTS, PRESET, DERIVED FROM ABOVE
+# OR PROMPTED FOR.
+###########################################################
+
+# Name of MySQL account script will create in SAFE_NAME
+export MYSQL_ACCOUNT_NAME=Ansible-DBA-MySQL
 
 # DNS name or IP address of MySQL DB container
-export MYSQL_SERVER_ADDRESS=$DOCKER_HOSTNAME
+export MYSQL_SERVER_ADDRESS=$(hostname)
 
 # MySQL default port is 3306
 export MYSQL_SERVER_PORT=3306
@@ -48,10 +51,12 @@ export MYSQL_DB_NAME=testdb
 export WORKLOAD_ID=ansible-xlr8r
 
 ###########################################################
-# NO NEED TO CHANGE ANYTHING BELOW THIS LINE
-# ALL VALUES BELOW ARE PRESET, DERIVED FROM ABOVE
-# OR PROMPTED FOR..
-###########################################################
+# Get Identity tenant ID and tenant subdomain name
+tmp=$(echo $IDENTITY_TENANT_URL | cut -d'/' -f3)
+export IDENTITY_TENANT_ID=$(echo $tmp | cut -d'.' -f1)
+
+tmp=$(echo $PCLOUD_TENANT_URL | cut -d'/' -f3)
+export PCLOUD_TENANT_ID=$(echo $tmp | cut -d'.' -f1)
 
 ###########################################################
 # Ansible container
@@ -105,5 +110,8 @@ export PCLOUD_URL=https://$CYBERARK_SUBDOMAIN_NAME.privilegecloud.cyberark.cloud
 export PCLOUD_ADMIN_USER=$CYBERARK_ADMIN_USER
 export PCLOUD_ADMIN_PWD=$CYBERARK_ADMIN_PWD
 
-###########################################################
+# make sure all scripts are executable
+chmod -R +x *.sh
+
+##########################################################
 # END
