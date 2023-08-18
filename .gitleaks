@@ -1,0 +1,22 @@
+[
+ {
+  "Description": "Generic API Key",
+  "StartLine": 45,
+  "EndLine": 46,
+  "StartColumn": 28,
+  "EndColumn": 1,
+  "Match": "PASSWORD=In1t1alR00tPa55w0rd",
+  "Secret": "In1t1alR00tPa55w0rd",
+  "File": "demo/demo-vars.sh",
+  "SymlinkFile": "",
+  "Commit": "532920f20fa2363fff2728c4c9188dee225adbac",
+  "Entropy": 3.5766177,
+  "Author": "Joseph Hunt",
+  "Email": "jodyhunt@hotmail.com",
+  "Date": "2023-07-20T19:50:14Z",
+  "Message": "create new MySQL account in safe",
+  "Tags": [],
+  "RuleID": "generic-api-key",
+  "Fingerprint": "532920f20fa2363fff2728c4c9188dee225adbac:demo/demo-vars.sh:generic-api-key:45"
+ }
+]
