@@ -2,7 +2,7 @@
 
 source ../demo-vars.sh
 
-./stop
+./stop.sh
 
 if [[ "$($DOCKER images -q $MYSQL_IMAGE)" = "" ]]; then
   pushd build
