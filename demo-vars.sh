@@ -55,7 +55,8 @@ export WORKLOAD_ID=ansible-xlr8r
 tmp=$(echo $IDENTITY_TENANT_URL | cut -d'/' -f3)
 export IDENTITY_TENANT_ID=$(echo $tmp | cut -d'.' -f1)
 
-tmp=$(echo $CYBERARK_SUBDOMAIN_NAME | cut -d'/' -f3)
+set -x
+tmp=$(echo $PCLOUD_TENANT_URL | cut -d'/' -f3)
 export CYBERARK_SUBDOMAIN_NAME=$(echo $tmp | cut -d'.' -f1)
 
 ###########################################################
