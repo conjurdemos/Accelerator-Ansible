@@ -14,8 +14,10 @@ export DOCKER="docker"
 # CyberArk tenant values
 
 # Your CyberArk tenant subdomain name
+#
 #    https://your-subdomain.cyberark.cloud
 # this value ^^^^^^^^^^^^^^
+
 export CYBERARK_SUBDOMAIN_NAME='<<YOUR_VALUE_HERE>>'
 
 ##################################################
@@ -26,16 +28,12 @@ export CYBERARK_SUBDOMAIN_NAME='<<YOUR_VALUE_HERE>>'
 export SAFE_NAME='<<YOUR_VALUE_HERE>>'
 
 ###########################################################
-# THERE SHOULD BE NO NEED TO CHANGE ANYTHING BELOW THIS LINE.
 # ALL VALUES BELOW ARE DEFAULTS, PRESET, DERIVED FROM ABOVE
 # OR PROMPTED FOR.
 ###########################################################
 
 # Name of MySQL account script will create in SAFE_NAME
-export MYSQL_ACCOUNT_NAME=Ansible-DBA-MySQL
-
-# DNS name or IP address of MySQL DB container
-export MYSQL_SERVER_ADDRESS=$(hostname)
+export MYSQL_ACCOUNT_NAME=Ansible-XLR8R-MySQL
 
 # MySQL default port is 3306
 export MYSQL_SERVER_PORT=3306
@@ -49,6 +47,8 @@ export MYSQL_DB_NAME=testdb
 # the specified Safe and Account.
 export WORKLOAD_ID=ansible-xlr8r
 
+# Docker network name
+export DOCKER_NETWORK_NAME=xlr8r-net
 
 ###########################################################
 # Ansible container
@@ -58,7 +58,9 @@ export DEMO_CONTAINER=ansible-xlr8r
 ###########################################################
 # Database container
 export MYSQL_IMAGE=mysql-5.7:ansible
-export MYSQL_SERVER=mysql-xlr8r
+export MYSQL_CONTAINER=mysql-xlr8r
+# Using docker networking - server "DNS" address is container name
+export MYSQL_SERVER_ADDRESS=$MYSQL_CONTAINER
 export MYSQL_LOGIN_HOST_ID=data/vault/$SAFE_NAME/$MYSQL_ACCOUNT_NAME/address
 export MYSQL_LOGIN_PORT_ID=data/vault/$SAFE_NAME/$MYSQL_ACCOUNT_NAME/Port
 export MYSQL_LOGIN_USER_ID=data/vault/$SAFE_NAME/$MYSQL_ACCOUNT_NAME/username

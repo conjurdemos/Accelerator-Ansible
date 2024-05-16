@@ -11,7 +11,7 @@ main() {
   if [[ "$($DOCKER ps | grep $DEMO_CONTAINER)" != "" ]]; then
     echo "Stopping and removing demo container..."
     $DOCKER stop $DEMO_CONTAINER && $DOCKER rm $DEMO_CONTAINER
-    $DOCKER stop $MYSQL_SERVER && $DOCKER rm $MYSQL_SERVER
+    $DOCKER stop $MYSQL_CONTAINER && $DOCKER rm $MYSQL_CONTAINER
   fi
   verify_env_vars
   verify_vault_setup
@@ -27,6 +27,7 @@ main() {
   cd mysql
     ./1-mysql-server-start.sh
   cd ..
+  setup_network
   $DOCKER exec -it $DEMO_CONTAINER bash
 }
 
@@ -219,6 +220,14 @@ create_summon_secrets_yml() {
   | sed -e "s#{{ MYSQL_LOGIN_USER_ID }}#$MYSQL_LOGIN_USER_ID#g"	\
   | sed -e "s#{{ MYSQL_PASSWORD_ID }}#$MYSQL_PASSWORD_ID#g"	\
   > ./demo/summon/secrets.yml
+}
+
+##############################
+setup_network() {
+ echo "Creating container network..."
+ $DOCKER network create $DOCKER_NETWORK_NAME
+ $DOCKER network connect $DOCKER_NETWORK_NAME $DEMO_CONTAINER
+ $DOCKER network connect $DOCKER_NETWORK_NAME $MYSQL_CONTAINER
 }
 
 main $@
