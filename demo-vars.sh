@@ -13,11 +13,10 @@ export DOCKER="docker"
 ##################################################
 # CyberArk tenant values
 
-# URL of your CyberArk Identity tenant
-export IDENTITY_TENANT_URL='<<YOUR_VALUE_HERE>>'
-
-# URL of your CyberArk Privilege Cloud tenant
-export PCLOUD_TENANT_URL='<<YOUR_VALUE_HERE>>'
+# Your CyberArk tenant subdomain name
+#    https://your-subdomain.cyberark.cloud
+# this value ^^^^^^^^^^^^^^
+export CYBERARK_SUBDOMAIN_NAME='<<YOUR_VALUE_HERE>>'
 
 ##################################################
 # Demo parameters
@@ -50,13 +49,6 @@ export MYSQL_DB_NAME=testdb
 # the specified Safe and Account.
 export WORKLOAD_ID=ansible-xlr8r
 
-###########################################################
-# Get Identity tenant ID and tenant subdomain name
-tmp=$(echo $IDENTITY_TENANT_URL | cut -d'/' -f3)
-export IDENTITY_TENANT_ID=$(echo $tmp | cut -d'.' -f1)
-
-tmp=$(echo $PCLOUD_TENANT_URL | cut -d'/' -f3)
-export CYBERARK_SUBDOMAIN_NAME=$(echo $tmp | cut -d'.' -f1)
 
 ###########################################################
 # Ansible container
@@ -100,6 +92,9 @@ if [[ "$CYBERARK_ADMIN_PWD" == "" ]]; then
   done
   export CYBERARK_ADMIN_PWD=$password
 fi
+
+###########################################################
+export IDENTITY_TENANT_URL=https://$CYBERARK_SUBDOMAIN_NAME.cyberark.cloud/api/idadmin
 
 export CONJUR_CLOUD_URL=https://$CYBERARK_SUBDOMAIN_NAME.secretsmgr.cyberark.cloud/api
 export CONJUR_AUTHN_LOGIN=data/$WORKLOAD_ID

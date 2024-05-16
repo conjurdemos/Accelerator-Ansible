@@ -112,9 +112,9 @@ main() {
 # sets the global authorization header used in api calls for other methods
 function pcloud_authenticate() {
   $util_defaults
-  jwToken=$($CURL 					\
-        -X POST \
-        https://$IDENTITY_TENANT_ID.id.cyberark.cloud/oauth2/platformtoken \
+  jwToken=$($CURL 							\
+        -X POST 							\
+        $IDENTITY_TENANT_URL/oauth2/platformtoken 			\
         -H "Content-Type: application/x-www-form-urlencoded"      	\
         --data-urlencode "grant_type"="client_credentials"              \
         --data-urlencode "client_id"="$PCLOUD_ADMIN_USER"               \
@@ -238,9 +238,9 @@ function checkDependencies() {
     echo "The JSON query utility jq is required. Please install jq."
     all_env_set=false
   fi
-  if [[ "$IDENTITY_TENANT_ID" == "" ]]; then
+  if [[ "$IDENTITY_TENANT_URL" == "" ]]; then
     echo
-    echo "  IDENTITY_TENANT_ID must be set - e.g. 'xyz1234'"
+    echo "  IDENTITY_TENANT_URL must be set - e.g. 'https://my-secrets.cyberark.cloud/api/idadmin'"
     all_env_set=false
   fi
   if [[ "$PCLOUD_URL" == "" ]]; then

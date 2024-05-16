@@ -12,9 +12,9 @@ RUN apt-get update -y \
 
 ENV PYTHONUNBUFFERED=1
 RUN apt-get update -y             \
-    && apt-get install -y python3 python3-pip ansible \
+    && apt-get install -y python3 python3-pip \
     && ln -sf python3 /usr/bin/python
-RUN pip3 install --no-cache --upgrade pip setuptools requests pymysql
+RUN pip3 install --no-cache --upgrade pip setuptools requests pymysql ansible==2.9.22
 
 RUN curl -LO https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 \
   && chmod a+x jq-linux64 \

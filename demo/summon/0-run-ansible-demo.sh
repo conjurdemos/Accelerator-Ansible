@@ -1,4 +1,5 @@
 #!/bin/bash
+export ANSIBLE_DEPRECATION_WARNINGS=false
 clear
 echo "Here is the contents of secrets.yml:"
 cat secrets.yml

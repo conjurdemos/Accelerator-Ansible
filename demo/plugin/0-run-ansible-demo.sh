@@ -12,4 +12,5 @@ export CONJUR_CERT_FILE=$(parse_file /etc/conjur.conf cert_file)
 export CONJUR_AUTHN_LOGIN=$(parse_file /etc/conjur.identity login)
 export CONJUR_AUTHN_API_KEY=$(parse_file /etc/conjur.identity password)
 
+export ANSIBLE_DEPRECATION_WARNINGS=false
 ansible-playbook -i inventory.yml demoPlaybook.yml
