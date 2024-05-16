@@ -11,7 +11,7 @@ if [[ "$($DOCKER images -q $MYSQL_IMAGE)" = "" ]]; then
 fi
 
 $DOCKER run -d 						\
-    --name $MYSQL_SERVER				\
+    --name $MYSQL_CONTAINER				\
     -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD"	\
     -p "$MYSQL_LOGIN_PORT:3306"				\
     --restart unless-stopped 				\
